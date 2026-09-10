@@ -9,6 +9,12 @@ url_api = "https://api.deepseek.com/chat/completions"
 
 st.title("🤖 AI智能数据分析助手")
 
+# 增加密码验证
+password = st.text_input("请输入使用密码: ", type="password")
+if password != st.secrets["password"]:
+    st.warning("请输入正确的密码才能使用! ")
+    st.stop()  # 密码不对, 直接停止运行
+
 # 1. 上传文件 (网页上的上传按钮)
 uploaded_file = st.file_uploader("请上传你的Excel表格", type=["xlsx"])
 
