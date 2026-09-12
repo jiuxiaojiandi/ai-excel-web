@@ -52,6 +52,16 @@ if st.button("开始分析"):
                 st.success("分析完成! ")
                 st.text_area("AI分析报告如下: ", result, height=300)
 
+                st.write("数据可视化: ")
+                if '年龄' in df.columns:
+                    st.bar_chart(df['年龄'])
+                elif '销售额' in df.columns:
+                    st.line_chart(df['销售额'])
+                else:
+                    # 如果没有找到特定列, 默认画出表格第一列的数据
+                    st.bar_chart(df.iloc[:, 0])
+                # ==============================
+
                 # 将结果转成 Excel 格式
                 wb = Workbook()
                 ws = wb.active
