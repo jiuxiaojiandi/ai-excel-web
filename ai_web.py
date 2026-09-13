@@ -5,6 +5,7 @@ import time as time_module # 防止和之前的time冲突, 起个别名
 import requests
 import io
 from openpyxl import Workbook
+import plotly.express as px
 
 api_key = st.secrets["api_key"]
 url_api = "https://api.deepseek.com/chat/completions"
@@ -73,14 +74,14 @@ if st.button("开始分析"):
                 st.text_area("AI分析报告如下: ", result, height=300)
 
                 st.write("数据可视化: ")
-                if '年龄' in df.columns:
-                    st.bar_chart(df['年龄'])
-                elif '销售额' in df.columns:
-                    st.line_chart(df['销售额'])
+                numeric_cols = df.select_dtypes(include=['int64', 'float64']).columns
+
+                if len(numeric_cols) > 0:
+                    fig = px.bar(df, x=df.columns[0], y=numeric_cols[0], title="数据图表分析")
+                    st.plotly_chart(fig, use_container_width=True)
                 else:
-                    # 如果没有找到特定列, 默认画出表格第一列的数据
-                    st.bar_chart(df.iloc[:, 0])
-                # ==============================
+                    st.info("表格中没有可以绘制的数值数据")
+                # =======================================
 
                 # 将结果转成 Excel 格式
                 wb = Workbook()
