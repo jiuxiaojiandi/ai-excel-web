@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+import sqlite3
+import time as time_module # 防止和之前的time冲突, 起个别名
 import requests
 import io
 from openpyxl import Workbook
@@ -8,6 +10,24 @@ api_key = st.secrets["api_key"]
 url_api = "https://api.deepseek.com/chat/completions"
 
 st.title("🤖 AI智能数据分析助手")
+
+# ===== 新增: 侧边栏历史记录 =====
+with st.sidebar:
+    st.header("历史分析记录")
+    try:
+        conn = sqlite3.connect('D:\\AI分析历史记录.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT time, filename FROM history ORDER BY id DESC LIMIT 10")
+        rows = cursor.fetchall()
+        if rows:
+            for row in rows:
+                st.write(f"**{row[0]}** - {row[1]}")
+        else:
+            st.write("暂无记录")
+        conn.close()
+    except:
+        st.write("等待第一条记录...")
+# ===================================
 
 # 增加密码验证
 password = st.text_input("请输入使用密码: ", type="password")
